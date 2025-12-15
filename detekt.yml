@@ -1,0 +1,114 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+processors:
+  active: true
+
+config:
+  validation: true
+
+# -----------------------------------
+#  Compose Multiplatform Adjustments
+# -----------------------------------
+
+style:
+  MagicNumber:
+    active: false            # Compose often uses pixel values or dp values inline
+  MaxLineLength:
+    active: true
+    maxLineLength: 160       # Compose UI DSL tends to be long horizontally
+  WildcardImport:
+    active: false            # Compose imports are frequently wildcarded
+  MagicString:
+    active: false            # Compose uses literal preview names, etc.
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated:
+      - "Composable"
+      - "Preview"            # Compose previews create unused private composables
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '[A-Za-z][A-Za-z0-9]*'
+    ignoreAnnotated:
+      - "Composable"
+      - "Preview"
+  TopLevelPropertyNaming:
+    active: true
+  ObjectPropertyNaming:
+    active: true
+  MatchingDeclarationName:
+    active: false            # Compose files often contain multiple @Composable functions
+
+complexity:
+  LongParameterList:
+    active: true
+    ignoreDefaultParameters: true
+    ignoreAnnotated:
+      - "Composable"         # Compose UIs often have long param lists
+  TooManyFunctions:
+    active: false            # Compose screens often bundle many UI helpers in a file
+
+comments:
+  CommentOverPrivateFunction:
+    active: false            # Compose UIs often have small helpers that don't need docs
+
+# -----------------------------------
+#  KMP / Multiplatform Adjustments
+# -----------------------------------
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false            # KMP often uses platform-specific exceptions
+  TooGenericExceptionThrown:
+    active: false
+  InstanceOfCheckForException:
+    active: false
+
+potential-bugs:
+  UnsafeCallOnNullableType:
+    active: true
+  LateinitUsage:
+    active: false            # KMP + Compose sometimes needs lateinit (ViewModels etc.)
+  NullPointerException:
+    active: true
+  IteratorHasNextCallsNext:
+    active: true
+
+# -----------------------------------
+#  Compose-Specific Best Practices
+# -----------------------------------
+
+compose:
+  # This section is custom — you must register rules via detektComposePlugin if desired.
+  # These are recommended detekt rules for Compose, if using detekt-compose plugin.
+  CompositionLocalUsage:
+    active: true
+    severity: warning        # Warn when CompositionLocal is used instead of DI
+  RememberMissing:
+    active: true             # Detects missing remember {} around state objects
+  ModifierWithoutDefault:
+    active: true             # Enforce `modifier: Modifier = Modifier`
+  MultipleModifiers:
+    active: false            # Compose often chains long modifier pipelines
+
+# -----------------------------------
+#  Formatting (ktlint)
+# -----------------------------------
+
+formatting:
+  active: true
+  android: false
+  chainWrapping:
+    active: false            # Compose modifiers chain frequently
+  argument-list-wrapping:
+    active: false            # Compose functions often exceed typical wrapping expectations
+  indentation:
+    active: true
+    indentSize: 4
+  trailing-comma:
+    active: false
+  filename:
+    active: false            # Disable file name = class name requirement
